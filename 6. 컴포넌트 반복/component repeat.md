@@ -10,6 +10,7 @@
        - currentValue : 현재 처리하고 있는 요소
        - index : 현재 요소의 index 값
        - array : 현재 처리하고 있는 원본 배열
+     - thisArg(선택항목) : callback 함수 내부에서 사용할 this 레퍼런스
 
      ```js
      var numbers=[1,2,3,4,5];
@@ -22,8 +23,6 @@
      3 2 [1, 2, 3, 4, 5]
      4 3 [1, 2, 3, 4, 5]
      5 4 [1, 2, 3, 4, 5]
-
-
      ```
 
 2. 데이터 배열을 컴포넌트 배열로 변환
@@ -183,3 +182,5 @@ export default IterationSample;
     };
     export default IterationSample;
     ```
+
+* 상태 안에서 배열을 변형할 때는 배열에 직접 접근하여 수정하는 것이 아니라 concat, filter 등의 배열 내장 함수를 사용하여 **새로운 배열을 만든 후** 새로운 상태로 설정해주어야 한다.

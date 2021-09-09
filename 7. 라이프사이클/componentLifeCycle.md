@@ -1,6 +1,7 @@
-# 라이프 사이클 이벤트
+# 컴포넌트의 라이프 사이클 메서드
 
-- 리액트의 컴포넌트는 생명주기(컴포넌트가 생성되고 사용되고 소멸될 때까지의 일련의 과정)를 가진다 -> 생명주기 안에서는 특정 시점에 자동으로 호출되는 메서드가 있는데 이를 **라이프 사이클 이벤트**라고 한다
+- 리액트의 컴포넌트는 생명주기(컴포넌트가 생성되고 사용되고 소멸될 때까지의 일련의 과정)를 가진다 -> 생명주기 안에서는 특정 시점에 자동으로 호출되는 메서드가 있는데 이를 **라이프 사이클 메서드**라고 한다
+- 리액트 프로젝트 진행 중 컴포넌트를 처음으로 렌더링 할 때 어떤 작업을 처리하거나, 컴포넌트를 업데이트하기 전후로 처리하거나, 불필요한 업테이트를 방지해아할 때 라이프사이클 메서드를 사용
   <br/><br/>
 
 1. 라이프사이클 메서드의 이해
@@ -21,6 +22,7 @@
         - **constructor** : 컴포넌트를 새로 만들 때마다 호출되는 클래스 생성자 메서드
         - **getDerivedStateFromProps** : props에 있는 값을 state에 넣을 때 사용하는 메서드
         - **render** : 준비한 UI를 렌더링하는 메서드
+        - **componentDidMount** : 컴포넌트가 웹 브라우저상에 나타난 후 호출하는 메서드
 
     - 업데이트
 
@@ -37,7 +39,7 @@
         특정 함수에서 this.forceUpdate() 함수를 호출하면 이 과정을 생략하고 바로 render 함수를 호출
       - render : 컴포넌트를 리렌더링한다
       - getSnapshotBeforeUpdate : 컴포넌트의 업데이트 작업이 끝난 후 호출하는 메서드 
-	  - componentDidUpdate : 컴포넌트의 업데이트 작업이 끝난 후 호출하는 메서드
+      - componentDidUpdate : 컴포넌트의 업데이트 작업이 끝난 후 호출하는 메서드
 
     - 언마운트
       - 컴포넌트를 DOM에서 제거하는 것
@@ -63,7 +65,7 @@
 
     - **render**()함수 
       - 컴포넌트 모양새를 정의(라이프 사이클 메서드 중 필수 메서드)
-      - this.props와 this.state에 접근 가능/ 리액트 요소(div같은 태그나 컴포넌트)를 반환
+      - this.props와 this.state에 접근 가능/ 리액트 요소(div같은 태그나 컴포넌트)를 반환<br/> 요소는 태그가 될 수도 있고, 컴포넌트가 될 수도 있음
 
         
     - **componentDidMount** 메서드 
@@ -300,7 +302,7 @@
 
             return (
                 <div>
-                    {this.props.missing.value}
+                    {this.props.missing.value} // 에러 발생시키기
                     <h1 style={style} ref={ref=>this.myRef=ref}>
                         {this.state.number}</h1>
                         <p>color:{this.state.color}</p>
@@ -314,3 +316,62 @@
 
     export default LifeCycleSample;
     ```
+
+    ```js
+    import React, { Component } from 'react';
+
+    class ErrorBoundary extends Component {
+        state = {
+            error:false
+        }
+        componentDidCatch(error, info){
+            this.setState({
+                error:true
+            });
+            console.log({error,info});
+        }
+        render() {
+            if(this.state.error) return <div>에러가 발생했습니다</div>
+            return this.props.children
+        }
+    }
+
+    export default ErrorBoundary;
+    ```
+
+    ```js
+    import React, { Component } from 'react';
+    import ErrorBoundary from './ErrorBoundary';
+    import LifeCycleSample from './LifeCycleSample'
+
+    function getRandomColor() {
+      return '#' + Math.floor(Math.random() * 16777215).toString(16);
+    }
+    class App extends Component {
+      state = {
+        color: '#000000'
+      }
+
+      handleClick = () => {
+        this.setState({
+          color: getRandomColor()
+        })
+      }
+
+      render() {
+        return (
+          <div>
+            <button onClick={this.handleClick}>랜덤 색상</button>
+            <ErrorBoundary>
+            <LifeCycleSample color={this.state.color} />
+            </ErrorBoundary>
+          
+          </div>
+        );
+      };
+    }
+
+    export default App;
+    ```
+
+<img src="./lifecyle4.png"><br/>
